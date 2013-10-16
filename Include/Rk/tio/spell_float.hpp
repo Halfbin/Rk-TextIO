@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include <Rk/Types.hpp>
+#include <Rk/types.hpp>
 
 #include <utility>
 
@@ -21,23 +21,17 @@
 
 namespace Rk
 {
-  namespace TextIO
+  namespace tio
   {
-    template <typename DigitMap>
-    struct FloatFormatParams
+    template <typename digit_map>
+    struct float_format_params
     {
-      uint      width,
-                integral_places;
-      DigitMap& digit_map;
+      uint       width,
+                 integral_places;
+      digit_map& digit_map;
     };
 
-
-
-
-
-
-
-    enum FloatKind
+    enum float_kind
     {
       float_nan = 0,
       float_subnormal,
@@ -46,40 +40,42 @@ namespace Rk
       float_normal
     };
 
-    template <typename Char>
-    class FloatSpelling
+    template <typename char_t>
+    class float_spelling
     {
-      Char      digs [18];
-      u32       len;
-      bool      neg;
-      i32       exp;
-      FloatKind fk;
+      char_t     digs [18];
+      u32        len;
+      bool       neg;
+      i32        exp;
+      float_kind fk;
 
     public:
-      explicit FloatSpelling (FloatKind new_kind = float_nan) :
+      explicit float_spelling (float_kind new_kind = float_nan) :
         len (0),
         exp (0),
         fk  (new_kind)
       { }
       
-      std::pair <Char*, Char*> buffer ()
+      auto buffer ()
+        -> std::pair <char_t*, char_t*>
       {
-        return std::make_pair (digs, std::end (digs));
+        return { digs, std::end (digs) };
       }
 
-      const Char* begin () const
+      const char_t* begin () const
       {
         return digs;
       }
 
-      const Char* end () const
+      const char_t* end () const
       {
         return digs + len;
       }
 
-      std::pair <const Char*, const Char*> digits () const
+      auto digits () const
+        -> std::pair <const char_t*, const char_t*> 
       {
-        return std::make_pair (begin (), end ());
+        return { begin (), end () };
       }
 
       bool empty () const
@@ -92,19 +88,19 @@ namespace Rk
         return len == 18;
       }
 
-      void push_back (Char digit)
+      void push_back (char_t digit)
       {
         digs [len++] = digit;
       }
 
-      u32&       length   ()       { return len; }
-      u32        length   () const { return len; }
-      bool&      negative ()       { return neg; }
-      bool       negative () const { return neg; }
-      i32&       exponent ()       { return exp; }
-      i32        exponent () const { return exp; }
-      FloatKind& kind     ()       { return fk; }
-      FloatKind  kind     () const { return fk; }
+      u32&        length   ()       { return len; }
+      u32         length   () const { return len; }
+      bool&       negative ()       { return neg; }
+      bool        negative () const { return neg; }
+      i32&        exponent ()       { return exp; }
+      i32         exponent () const { return exp; }
+      float_kind& kind     ()       { return fk; }
+      float_kind  kind     () const { return fk; }
 
       bool normal () const
       {
@@ -139,10 +135,10 @@ namespace Rk
     };
 
     auto RK_API spell_float (f64 magnitude, char zero)
-      -> FloatSpelling <char>;
+      -> float_spelling <char>;
 
     auto RK_API spell_float (f64 magnitude, char16 zero)
-      -> FloatSpelling <char16>;
+      -> float_spelling <char16>;
 
   }
 

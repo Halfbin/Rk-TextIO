@@ -9,13 +9,14 @@
 // in relation to such use.
 //
 
-#include "Test.hpp"
+#include "test.hpp"
 
 namespace RkTest
 {
   bool test_spell_natural ();
   bool test_spell_float   ();
   bool test_outstream     ();
+  bool test_format        ();
 
   bool test_textio ()
   {
@@ -24,7 +25,8 @@ namespace RkTest
     TEST (test_spell_natural ());
     TEST (test_spell_float ());
     TEST (test_outstream ());
-    
+    TEST (test_format ());
+
     return ok;
   }
 

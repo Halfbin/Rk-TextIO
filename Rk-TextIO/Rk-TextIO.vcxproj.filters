@@ -1,18 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="..\Include\Rk\TextIO\OutStream.hpp" />
-    <ClInclude Include="..\Include\Rk\TextIO\Forward.hpp" />
-    <ClInclude Include="..\Include\Rk\TextIO\OutDevice.hpp" />
-    <ClInclude Include="..\Include\Rk\TextIO\OutTransform.hpp" />
-    <ClInclude Include="..\Include\Rk\TextIO\SpellNatural.hpp" />
-    <ClInclude Include="..\Include\Rk\TextIO\SpellFloat.hpp" />
-    <ClInclude Include="SoftFloat.hpp" />
-    <ClInclude Include="..\Include\Rk\TextIO\DefaultOutTransform.hpp" />
-    <ClInclude Include="..\Include\Rk\TextIO\FixedOutStream.hpp" />
+    <ClInclude Include="..\Include\Rk\tio\out_stream.hpp" />
+    <ClInclude Include="..\Include\Rk\tio\speller.hpp" />
+    <ClInclude Include="..\Include\Rk\tio\default_speller.hpp" />
+    <ClInclude Include="..\Include\Rk\tio\fixed_out_stream.hpp" />
+    <ClInclude Include="..\Include\Rk\tio\forward.hpp" />
+    <ClInclude Include="..\Include\Rk\tio\sink.hpp" />
+    <ClInclude Include="..\Include\Rk\tio\raw_out_stream.hpp" />
+    <ClInclude Include="soft_float.hpp" />
+    <ClInclude Include="..\Include\Rk\tio\spell_float.hpp" />
+    <ClInclude Include="..\Include\Rk\tio\spell_natural.hpp" />
+    <ClInclude Include="..\Include\Rk\tio\format.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SpellNatural.cpp" />
-    <ClCompile Include="SpellFloat.cpp" />
+    <ClCompile Include="spell_float.cpp" />
   </ItemGroup>
 </Project>

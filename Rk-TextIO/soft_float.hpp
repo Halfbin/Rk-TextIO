@@ -11,45 +11,24 @@
 
 #pragma once
 
-#include <Rk/Types.hpp>
+#include <Rk/type_traits.hpp>
+#include <Rk/types.hpp>
 
 namespace Rk
 {
-  namespace TextIO
+  namespace tio
   {
-    u64 as_bits (f64 value)
-    {
-      union U { f64 f; u64 i; } u = { value };
-      return u.i;
-    }
-
-    struct SoftFloat
+    struct soft_float
     {
       u64 significand;
       i32 exponent;
 
-      SoftFloat () { }
+      soft_float () = default;
 
-      SoftFloat (u64 new_significand, i32 new_exponent) :
+      soft_float (u64 new_significand, i32 new_exponent) :
         significand (new_significand),
         exponent    (new_exponent)
       { }
-      
-      SoftFloat (f64 value)
-      {
-        significand = as_bits (value) & ((1ull << 52) - 1);
-
-        auto raw_exp = u32 (as_bits (value) >> 52) & 0x7ff;
-        if (raw_exp != 0)
-        {
-          significand |= 1ull << 52;
-          exponent = i32 (raw_exp) - 1075;
-        }
-        else // subnorm
-        {
-          exponent = -1074;
-        }
-      }
       
       void normalize ()
       {
@@ -67,12 +46,7 @@ namespace Rk
         }
       }
 
-      /*friend SoftFloat operator - (SoftFloat lhs, SoftFloat rhs)
-      {
-        return SoftFloat (lhs.significand - rhs.significand, lhs.exponent);
-      }*/
-
-      SoftFloat& operator *= (SoftFloat rhs)
+      soft_float& operator *= (soft_float rhs)
       {
         const u64 
           mask32 = (1ull << 32) - 1,
@@ -92,7 +66,7 @@ namespace Rk
         return *this;
       }
 
-      friend SoftFloat operator * (SoftFloat lhs, SoftFloat rhs)
+      friend soft_float operator * (soft_float lhs, soft_float rhs)
       {
         lhs *= rhs;
         return lhs;

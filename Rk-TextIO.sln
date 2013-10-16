@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.20827.3
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Rk-TextIO", "Rk-TextIO\Rk-TextIO.vcxproj", "{2653FA84-FE98-4487-8D89-5B1237B4B706}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Rk-TextIO-Test", "Rk-TextIO-Test\Rk-TextIO-Test.vcxproj", "{4F590FEE-CAC2-4A78-A268-3355E6D00503}"

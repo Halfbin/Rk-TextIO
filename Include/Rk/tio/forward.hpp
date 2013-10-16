@@ -9,22 +9,27 @@
 // in relation to such use.
 //
 
-#include <Rk/TextIO/FixedOutStream.hpp>
+#pragma once
 
-namespace TIO = Rk::TextIO;
-
-namespace RkTest
+namespace Rk
 {
-  
-
-  bool test_outstream ()
+  namespace tio
   {
-    char buf [64];
-    auto os = TIO::make_fixed_out_stream (buf, 64);
+    template <typename char_t>
+    class sink;
 
+    template <typename sink>
+    class speller;
 
+    template <
+      typename                  char_t,
+      template <typename> class sink,
+      template <typename> class speller>
+    struct out_stream_policy;
 
-    return true;
+    template <typename policy>
+    class out_stream;
+
   }
 
 }

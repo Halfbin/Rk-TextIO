@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include <Rk/Types.hpp>
+#include <Rk/types.hpp>
 
 #include <type_traits>
 
@@ -21,35 +21,35 @@
 
 namespace Rk
 {
-  namespace TextIO
+  namespace tio
   {
-    template <typename T, typename DigitMap>
-    class NaturalSpeller
+    template <typename int_t, typename digit_map_t>
+    class natural_speller
     {
-      static_assert (std::is_unsigned <T>::value, "NaturalSpeller may only use unsigned values");
+      static_assert (std::is_unsigned <int_t>::value, "NaturalSpeller may only use unsigned values");
 
-      T         magnitude,
-                radix,
-                divisor;
-      DigitMap& digit_map;
+      int_t              magnitude,
+                         radix,
+                         divisor;
+      const digit_map_t& digit_map;
 
-      static DigitMap& digit_map_val ();
+      static const digit_map_t& digit_map_val ();
 
     public:
-      typedef typename std::remove_reference <decltype (digit_map_val () [0])>::type
-        Unit;
+      typedef std::remove_reference_t <decltype (digit_map_val () [0])>
+        char_t;
 
-      NaturalSpeller (T new_magnitude, T new_radix, DigitMap& new_digit_map) :
+      natural_speller (int_t new_magnitude, int_t new_radix, digit_map_t& new_digit_map) :
         magnitude (new_magnitude),
         radix     (new_radix),
         divisor   (1),
         digit_map (new_digit_map)
       {
-        uptr map_size = std::end (digit_map) - std::begin (digit_map);
+        size_t map_size = std::end (digit_map) - std::begin (digit_map);
         if (radix < 2 || radix > map_size)
           throw std::invalid_argument ("Invalid radix");
 
-        while (divisor < std::numeric_limits <T>::max () / radix)
+        while (divisor < std::numeric_limits <int_t>::max () / radix)
         {
           auto next = divisor * radix;
           if (next > magnitude)
@@ -59,7 +59,7 @@ namespace Rk
       }
       
       auto next_digit ()
-        -> Unit
+        -> char_t
       {
         auto digit = digit_map [magnitude / divisor];
         magnitude %= divisor;
@@ -67,9 +67,9 @@ namespace Rk
         return digit;
       }
 
-      template <typename Iter>
-      auto get_digits (Iter dest, Iter limit, uptr count = 100)
-        -> Iter
+      template <typename iter>
+      auto get_digits (iter dest, iter limit, size_t count = 100)
+        -> iter
       {
         while (!done () && dest != limit && count--)
           *dest++ = next_digit ();
@@ -77,7 +77,7 @@ namespace Rk
       }
 
       template <typename Iter>
-      auto get_digits (Iter dest, uptr capacity, uptr count = 100)
+      auto get_digits (Iter dest, size_t capacity, size_t count = 100)
         -> Iter
       {
         return get_digits (dest, dest + capacity, count);
@@ -90,40 +90,16 @@ namespace Rk
 
     };
 
-    template <typename T, typename R, typename DigitMap>
-    auto spell_natural (T magnitude, R radix, DigitMap& digit_map)
-      -> NaturalSpeller <typename std::make_unsigned <T>::type, DigitMap>
+    template <typename int_t, typename digit_map_t>
+    auto spell_natural (int_t magnitude, uint radix, digit_map_t& digit_map)
+      -> natural_speller <std::make_unsigned_t <int_t>, digit_map_t>
     {
       if (magnitude < 0)
         throw std::domain_error ("spell_natural cannot spell negative integers");
 
-      return NaturalSpeller <typename std::make_unsigned <T>::type, DigitMap> (
-        magnitude, radix, digit_map
-      );
+      return { magnitude, radix, digit_map };
     }
 
-    /*uptr RK_API spell_natural (
-      char* buffer,
-      uptr  size,
-      char  zero,
-      u32   magnitude,
-      uint  radix,
-      char  group_seperator = 0,
-      uint  group_length = 0
-    );
-    
-    uptr RK_API spell_natural (
-      char* buffer,
-      uptr  size,
-      char  zero,
-      u64   magnitude,
-      uint  radix,
-      char  group_seperator = 0,
-      uint  group_length = 0
-    );*/
+  } // tio
 
-    
-
-  }
-
-}
+} // Rk

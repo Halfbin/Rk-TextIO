@@ -12,26 +12,26 @@
 #pragma once
 
 // Implements
-#include <Rk/TextIO/OutTransform.hpp>
+#include <Rk/tio/speller.hpp>
 
 // Uses
-#include <Rk/TextIO/SpellNatural.hpp>
-#include <Rk/TextIO/SpellFloat.hpp>
+#include <Rk/tio/spell_natural.hpp>
+#include <Rk/tio/spell_float.hpp>
 
-#include <Rk/Memory.hpp>
+#include <Rk/memory.hpp>
 
 namespace Rk
 {
-  namespace TextIO
+  namespace tio
   {
-    template <typename Device>
-    class DefaultOutTransform :
-      public OutTransform <Device>
+    template <typename sink>
+    class default_speller :
+      public speller <sink>
     {
-      template <typename Decomp>
-      void apply_int (Device& d, Decomp i)
+      template <typename decomp>
+      void apply_int (sink& sink, decomp i)
       {
-        Char buffer [66];
+        char_t buffer [66];
         auto ptr = std::begin (buffer);
         auto end = std::end   (buffer);
 
@@ -43,33 +43,33 @@ namespace Rk
 
         auto length = ptr - buffer;
 
-        auto dest = d.acquire (length);
+        auto dest = sink.acquire (length);
         copy (dest, length, buffer);
-        d.release (length);
+        sink.release (length);
       }
 
     public:
-      void apply (Device& d, StringRefBase <Char> s)
+      void apply (sink& d, string_ref_base <char_t> s)
       {
         write (d, s.begin (), s.end ());
       }
 
-      void apply (Device& d, Char c)
+      void apply (sink& d, char_t c)
       {
         write (d, &c, 1);
       }
 
-      void apply (Device& d, Int32Decomp i)
+      void apply (sink& d, soft_int_32 i)
       {
         apply_int (d, i);
       }
 
-      void apply (Device& d, Int64Decomp i)
+      void apply (sink& d, soft_int_64 i)
       {
         apply_int (d, i);
       }
 
-      void apply (Device& d, bool value)
+      void apply (sink& d, bool value)
       {
         if (value)
           write (d, "true", 4);
@@ -77,18 +77,18 @@ namespace Rk
           write (d, "false", 5);
       }
 
-      void apply (Device& d, double value)
+      void apply (sink& d, double value)
       {
         auto spelling = spell_float (value, '0');
 
-        Char buffer [64];
+        char_t buffer [64];
         auto ptr = std::begin (buffer);
         auto end = std::end   (buffer);
 
         if (!spelling.empty ())
         {
           ptr = copy (ptr, end, spelling.begin (), spelling.end ());
-          *ptr++ = Char ('E');
+          *ptr++ = char_t ('E');
 
           if (spelling.exponent () < 0)
             *ptr++ = '-';

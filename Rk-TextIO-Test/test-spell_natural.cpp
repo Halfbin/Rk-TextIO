@@ -9,23 +9,23 @@
 // in relation to such use.
 //
 
-#include <Rk/TextIO/SpellNatural.hpp>
-#include <Rk/StringRef.hpp>
+#include <Rk/tio/spell_natural.hpp>
+#include <Rk/string_ref.hpp>
 
 #include "Test.hpp"
 
 namespace RkTest
 {
   template <typename T>
-  bool test_spell_natural (Rk::StringRef canonical, T value, uint radix)
+  bool test_spell_natural (Rk::string_ref canonical, T value, uint radix)
   {
     char buffer [66];
     
-    auto end = Rk::TextIO::
+    auto end = Rk::tio::
       spell_natural (value, radix, "0123456789abcdefghijklmnopqrstuvwxyz")
       .get_digits (buffer, 66);
 
-    return Rk::StringRef (buffer, end) == canonical;
+    return Rk::string_ref (buffer, end) == canonical;
   }
 
   bool test_spell_natural () try

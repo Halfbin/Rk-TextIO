@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -11,19 +11,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Include\Rk\TextIO\DefaultOutTransform.hpp" />
-    <ClInclude Include="..\Include\Rk\TextIO\FixedOutStream.hpp" />
-    <ClInclude Include="..\Include\Rk\TextIO\Forward.hpp" />
-    <ClInclude Include="..\Include\Rk\TextIO\SpellFloat.hpp" />
-    <ClInclude Include="..\Include\Rk\TextIO\SpellNatural.hpp" />
-    <ClInclude Include="..\Include\Rk\TextIO\OutDevice.hpp" />
-    <ClInclude Include="..\Include\Rk\TextIO\OutStream.hpp" />
-    <ClInclude Include="..\Include\Rk\TextIO\OutTransform.hpp" />
-    <ClInclude Include="SoftFloat.hpp" />
+    <ClInclude Include="..\Include\Rk\tio\default_speller.hpp" />
+    <ClInclude Include="..\Include\Rk\tio\fixed_out_stream.hpp" />
+    <ClInclude Include="..\Include\Rk\tio\format.hpp" />
+    <ClInclude Include="..\Include\Rk\tio\forward.hpp" />
+    <ClInclude Include="..\Include\Rk\tio\sink.hpp" />
+    <ClInclude Include="..\Include\Rk\tio\out_stream.hpp" />
+    <ClInclude Include="..\Include\Rk\tio\raw_out_stream.hpp" />
+    <ClInclude Include="..\Include\Rk\tio\speller.hpp" />
+    <ClInclude Include="..\Include\Rk\tio\spell_float.hpp" />
+    <ClInclude Include="..\Include\Rk\tio\spell_natural.hpp" />
+    <ClInclude Include="soft_float.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SpellFloat.cpp" />
-    <ClCompile Include="SpellNatural.cpp" />
+    <ClCompile Include="spell_float.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2653FA84-FE98-4487-8D89-5B1237B4B706}</ProjectGuid>
@@ -34,12 +35,14 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">

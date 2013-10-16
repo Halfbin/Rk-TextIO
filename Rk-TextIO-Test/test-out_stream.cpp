@@ -9,27 +9,16 @@
 // in relation to such use.
 //
 
-#pragma once
+#include <Rk/tio/fixed_out_stream.hpp>
 
-namespace Rk
+namespace RkTest
 {
-  namespace TextIO
+  bool test_outstream ()
   {
-    template <typename Char>
-    class OutDevice;
+    char buf [64];
+    auto os = Rk::tio::make_fixed_out_stream (buf, 64);
 
-    template <typename Device>
-    class OutTransform;
-
-    template <
-      typename                  Char,
-      template <typename> class Device,
-      template <typename> class Transform>
-    struct OutStreamPolicy;
-
-    template <typename Policy>
-    class OutStream;
-
+    return true;
   }
 
 }

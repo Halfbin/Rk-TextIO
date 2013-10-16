@@ -9,23 +9,23 @@
 // in relation to such use.
 //
 
-#include <Rk/TextIO/SpellFloat.hpp>
-#include <Rk/StringRef.hpp>
+#include <Rk/tio/spell_float.hpp>
+#include <Rk/string_ref.hpp>
 
 #include "Test.hpp"
 
 namespace RkTest
 {
-  bool test_spell_float_kind (double value, Rk::TextIO::FloatKind canon)
+  bool test_spell_float_kind (double value, Rk::tio::float_kind canon)
   {
-    auto spelling = Rk::TextIO::spell_float (value, '0');
+    auto spelling = Rk::tio::spell_float (value, '0');
     return spelling.kind () == canon;
   }
 
-  bool test_spell_float (Rk::StringRef canon_digits, i32 canon_exp, double value)
+  bool test_spell_float (Rk::string_ref canon_digits, i32 canon_exp, double value)
   {
-    auto spelling = Rk::TextIO::spell_float (value, '0');
-    return Rk::StringRef (spelling.begin (), spelling.length ()) == canon_digits && spelling.exponent () == canon_exp;
+    auto spelling = Rk::tio::spell_float (value, '0');
+    return Rk::string_ref (spelling.begin (), spelling.length ()) == canon_digits && spelling.exponent () == canon_exp;
   }
 
   bool test_spell_float () try
@@ -52,9 +52,9 @@ namespace RkTest
     auto nan = std::numeric_limits <double>::quiet_NaN (),
          inf = std::numeric_limits <double>::infinity  ();
 
-    TEST (test_spell_float_kind (0.0, Rk::TextIO::float_zero));
-    TEST (test_spell_float_kind (nan, Rk::TextIO::float_nan));
-    TEST (test_spell_float_kind (inf, Rk::TextIO::float_infinite));
+    TEST (test_spell_float_kind (0.0, Rk::tio::float_zero));
+    TEST (test_spell_float_kind (nan, Rk::tio::float_nan));
+    TEST (test_spell_float_kind (inf, Rk::tio::float_infinite));
 
     return ok;
   }

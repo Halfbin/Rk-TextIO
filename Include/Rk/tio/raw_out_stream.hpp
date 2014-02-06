@@ -62,7 +62,7 @@ namespace Rk
 
       void flush ()
       {
-        write (next, buf.data (), buf.size ());
+        write (next, buf.data (), buf.size () * sizeof (char_t));
         ptr = buf.data ();
       }
 

@@ -67,11 +67,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="test-utf8-decoding.cpp" />
-    <ClCompile Include="test-utf8-encoding.cpp" />
     <ClCompile Include="test-format.cpp" />
     <ClCompile Include="test-out_stream.cpp" />
-    <ClCompile Include="test-spell_float.cpp" />
+    <ClCompile Include="test-spell_float.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="test-spell_natural.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>

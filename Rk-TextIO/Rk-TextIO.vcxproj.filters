@@ -31,15 +31,6 @@
     <ClInclude Include="..\Include\Rk\tio\spell_integer.hpp">
       <Filter>API</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\Rk\tio\unicode_common.hpp">
-      <Filter>API</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\Rk\tio\utf8.hpp">
-      <Filter>API</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\Rk\tio\utf16.hpp">
-      <Filter>API</Filter>
-    </ClInclude>
     <ClInclude Include="soft_float.hpp">
       <Filter>Impl</Filter>
     </ClInclude>
@@ -52,12 +43,6 @@
       <Filter>Impl</Filter>
     </ClCompile>
     <ClCompile Include="spell_integer.cpp">
-      <Filter>Impl</Filter>
-    </ClCompile>
-    <ClCompile Include="utf8.cpp">
-      <Filter>Impl</Filter>
-    </ClCompile>
-    <ClCompile Include="utf16.cpp">
       <Filter>Impl</Filter>
     </ClCompile>
   </ItemGroup>

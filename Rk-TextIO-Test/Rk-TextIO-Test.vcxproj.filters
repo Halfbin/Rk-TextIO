@@ -6,8 +6,6 @@
     <ClCompile Include="test-spell_float.cpp" />
     <ClCompile Include="test-spell_natural.cpp" />
     <ClCompile Include="test-out_stream.cpp" />
-    <ClCompile Include="test-utf8-decoding.cpp" />
-    <ClCompile Include="test-utf8-encoding.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="test.hpp" />

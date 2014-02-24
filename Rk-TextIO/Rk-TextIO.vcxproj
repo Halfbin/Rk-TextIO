@@ -12,7 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\Rk\tio\spell_float.hpp" />
-    <ClInclude Include="..\Include\Rk\tio\unicode_common.hpp" />
     <ClInclude Include="..\Include\Rk\tio\default_ortho.hpp" />
     <ClInclude Include="..\Include\Rk\tio\array_out_stream.hpp" />
     <ClInclude Include="..\Include\Rk\tio\format.hpp" />
@@ -22,16 +21,12 @@
     <ClInclude Include="..\Include\Rk\tio\float_expander.hpp" />
     <ClInclude Include="..\Include\Rk\tio\spell_integer.hpp" />
     <ClInclude Include="..\Include\Rk\tio\radix_expander.hpp" />
-    <ClInclude Include="..\Include\Rk\tio\utf16.hpp" />
-    <ClInclude Include="..\Include\Rk\tio\utf8.hpp" />
     <ClInclude Include="soft_float.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="default_ortho.cpp" />
     <ClCompile Include="spell_float.cpp" />
     <ClCompile Include="spell_integer.cpp" />
-    <ClCompile Include="utf16.cpp" />
-    <ClCompile Include="utf8.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2653FA84-FE98-4487-8D89-5B1237B4B706}</ProjectGuid>

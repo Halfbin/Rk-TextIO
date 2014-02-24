@@ -15,8 +15,8 @@
 
 #include <type_traits>
 
-#ifndef RK_API
-#define RK_API
+#ifndef RK_TEXTIO_API
+#define RK_TEXTIO_API __declspec(dllimport)
 #endif
 
 namespace Rk

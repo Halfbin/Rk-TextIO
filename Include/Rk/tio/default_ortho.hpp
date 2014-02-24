@@ -21,17 +21,17 @@
 
 #include <Rk/memory.hpp>
 
-#ifndef RK_API
-#define RK_API
+#ifndef RK_TEXTIO_API
+#define RK_TEXTIO_API __declspec(dllimport)
 #endif
 
 namespace Rk
 {
   namespace tio
   {
-    extern RK_API const cnumeric_ortho        default_numeric_ortho;
-    extern RK_API const cboolean_ortho        default_boolean_ortho;
-    extern RK_API const numeric_ortho_options default_numeric_ortho_options;
+    extern RK_TEXTIO_API const cnumeric_ortho        default_numeric_ortho;
+    extern RK_TEXTIO_API const cboolean_ortho        default_boolean_ortho;
+    extern RK_TEXTIO_API const numeric_ortho_options default_numeric_ortho_options;
 
     template <typename unit_t>
     class default_ortho;
@@ -48,7 +48,7 @@ namespace Rk
       numeric_ortho_options numeric_opts;
       bool digital_bool;
       
-      RK_API default_ortho ();
+      RK_TEXTIO_API default_ortho ();
 
       cstring_ref spell_true () const
       {

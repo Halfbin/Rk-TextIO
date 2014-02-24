@@ -13,8 +13,8 @@
 
 #include <Rk/tio/radix_expander.hpp>
 
-#ifndef RK_API
-#define RK_API
+#ifndef RK_TEXTIO_API
+#define RK_TEXTIO_API __declspec(dllimport)
 #endif
 
 namespace Rk
@@ -42,7 +42,7 @@ namespace Rk
       radix_expander <u32> int_expander;
 
     public:
-      RK_API float_expander (double value);
+      RK_TEXTIO_API float_expander (double value);
 
       u32 next_digit () // pre: !done ()
       {

@@ -16,16 +16,16 @@
 
 #include <Rk/string_ref.hpp>
 
-#ifndef RK_API
-#define RK_API
+#ifndef RK_TEXTIO_API
+#define RK_TEXTIO_API __declspec(dllimport)
 #endif
 
 namespace Rk
 {
   namespace tio
   {
-    RK_API void spell_integer (csink&, soft_int_32, const cnumeric_ortho&, const numeric_ortho_options&);
-    RK_API void spell_integer (csink&, soft_int_64, const cnumeric_ortho&, const numeric_ortho_options&);
+    RK_TEXTIO_API void spell_integer (csink&, soft_int_32, const cnumeric_ortho&, const numeric_ortho_options&);
+    RK_TEXTIO_API void spell_integer (csink&, soft_int_64, const cnumeric_ortho&, const numeric_ortho_options&);
 
   }
 

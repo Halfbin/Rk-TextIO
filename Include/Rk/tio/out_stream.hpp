@@ -11,7 +11,6 @@
 
 #pragma once
 
-#include <Rk/tio/forward.hpp>
 #include <Rk/tio/sink.hpp>
 
 #include <Rk/string_ref.hpp>
@@ -24,56 +23,53 @@ namespace Rk
 {
   namespace tio
   {
-    template <
-      typename                  char_t,
-      template <typename> class sink,
-      template <typename> class speller>
+    template <typename unit_t, typename ortho_t, typename sink_t>
     struct out_stream_policy
     {
-      typedef char_t           char_t;
-      typedef sink <char_t>    sink_t;
-      typedef speller <sink_t> speller_t;
-
+      typedef unit_t  unit_t;
+      typedef ortho_t ortho_t;
+      typedef sink_t  sink_t;
+      
     };
 
     template <typename policy>
     class out_stream
     {
     public:
-      typedef typename policy::char_t    char_t;
-      typedef typename policy::sink_t    sink_t;
-      typedef typename policy::speller_t speller_t;
+      typedef typename policy::unit_t  unit_t;
+      typedef typename policy::ortho_t ortho_t;
+      typedef typename policy::sink_t  sink_t;
       
     private:
-      sink_t    sn;
-      speller_t sp;
+      sink_t  sn;
+      ortho_t orth;
 
     public:
-      explicit out_stream (sink_t new_sn = sink_t (), speller_t new_sp = speller_t ()) :
-        sn (std::forward <sink_t>    (new_sn)),
-        sp (std::forward <speller_t> (new_sp))
+      explicit out_stream (sink_t new_sn = sink_t (), ortho_t new_orth = ortho_t ()) :
+        sn   (std::forward <sink_t>  (new_sn)),
+        orth (std::forward <ortho_t> (new_orth))
       { }
       
       out_stream             (const out_stream&) = default;
       out_stream& operator = (const out_stream&) = default;
 
       out_stream (out_stream&& other) :
-        sn (std::forward <sink_t>    (other.sn)),
-        sp (std::forward <speller_t> (other.sp))
+        sn   (std::forward <sink_t>  (other.sn)),
+        orth (std::forward <ortho_t> (other.orth))
       { }
       
       out_stream& operator = (out_stream&& other)
       {
         sn = std::move (other.sn);
-        sp = std::move (other.sp);
+        orth = std::move (other.orth);
         return *this;
       }
 
-            sink_t&    sink  ()       { return sn; }
-      const sink_t&    sink  () const { return sn; }
-            speller_t& spell ()       { return sp; }
-      const speller_t& spell () const { return sp; }
-      
+      sink_t&        sink  ()       { return sn; }
+      const sink_t&  sink  () const { return sn; }
+      ortho_t&       ortho ()       { return orth; }
+      const ortho_t& ortho () const { return orth; }
+
       template <typename... arg_ts>
       void write (arg_ts&&... args)
       {
@@ -81,64 +77,64 @@ namespace Rk
       }
 
       // Strings
-      template <typename T>
-      auto operator << (T&& value)
-        -> std::enable_if_t <
-            std::is_convertible <T, string_ref_base <char_t>>::value,
+      template <typename arg_t>
+      auto operator << (arg_t&& value)
+        -> typename std::enable_if <
+            std::is_convertible <arg_t, string_ref_base <unit_t>>::value,
             out_stream&
-          >
+          >::type
       {
-        sp.apply (sn, string_ref_base <char_t> (std::forward <T> (value)));
+        sn.write (string_ref_base <unit_t> (std::forward <arg_t> (value)));
         return *this;
       }
 
-      // Chars
-      template <typename T>
-      auto operator << (T value)
-        -> std::enable_if_t <
-            std::is_same <T, char_t>::value,
+      // Code units
+      template <typename arg_t>
+      auto operator << (arg_t value)
+        -> typename std::enable_if <
+            std::is_same <arg_t, unit_t>::value,
             out_stream&
-          >
+          >::type
       {
-        sp.apply (sn, value);
+        write (&value, 1);
         return *this;
       }
 
       // Ints
-      template <typename T>
-      auto operator << (T value)
-        -> std::enable_if_t <
-            std::is_integral <T>        ::value &&
-            !std::is_same    <T, char_t>::value &&
-            !std::is_same    <T, bool>  ::value,
+      template <typename arg_t>
+      auto operator << (arg_t value)
+        -> typename std::enable_if <
+            std::is_integral <arg_t>        ::value &&
+            !std::is_same    <arg_t, unit_t>::value &&
+            !std::is_same    <arg_t, bool>  ::value,
             out_stream&
-          >
+          >::type
       {
-        sp.apply (sn, decompose (value));
+        orth.spell (sn, decompose (value));
         return *this;
       }
 
       // bool
-      template <typename T>
-      auto operator << (T value)
+      template <typename arg_t>
+      auto operator << (arg_t value)
         -> typename std::enable_if <
-            std::is_same <T, bool>::value,
+            std::is_same <arg_t, bool>::value,
             out_stream&
           >::type
       {
-        sp.apply (sn, value);
+        orth.spell (sn, value);
         return *this;
       }
 
       // Floats
-      template <typename T>
-      auto operator << (T value)
+      template <typename arg_t>
+      auto operator << (arg_t value)
         -> typename std::enable_if <
-            std::is_floating_point <T>::value,
+            std::is_floating_point <arg_t>::value,
             out_stream&
           >::type
       {
-        sp.apply (sn, double (value));
+        orth.spell (sn, double (value));
         return *this;
       }
 

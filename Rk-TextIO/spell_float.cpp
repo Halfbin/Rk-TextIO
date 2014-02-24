@@ -9,7 +9,12 @@
 // in relation to such use.
 //
 
+// Implements
+#include <Rk/tio/float_expander.hpp>
 #include <Rk/tio/spell_float.hpp>
+
+// Uses
+#include <Rk/tio/spell_integer.hpp>
 
 #include "soft_float.hpp"
 
@@ -160,78 +165,6 @@ namespace Rk
       margin = upper_bound.significand - lower_bound.significand - 1;
     }
 
-    template <typename char_t>
-    auto generate_digits (soft_float upper_bound, u64 margin, i32 decimal_exponent, char_t zero)
-      -> float_spelling <char_t>
-    {
-      const u64 fractional_mask = (1ull << -upper_bound.exponent) - 1;
-      
-      size_t length = 0;
-      i32 descale_exponent = 10;
-      
-      u32 scaled_integrals = u32 (upper_bound.significand >> -upper_bound.exponent);
-      u64 scaled_fractionals = upper_bound.significand & fractional_mask;
-      
-      float_spelling <char_t> spelling;
-      spelling.exponent () = decimal_exponent;
-
-      // Generate integrals
-      u32 divisor = 1000000000;
-      while (descale_exponent > 0)
-      {
-        if (spelling.full ())
-          throw std::runtime_error ("Out of buffer space");
-
-        char_t digit = char_t (scaled_integrals / divisor);
-        if (digit != 0 || length != 0)
-          spelling.push_back (zero + digit);
-
-        scaled_integrals %= divisor;
-        descale_exponent--;
-        divisor /= 10;
-
-        if ((u64 (scaled_integrals) << -upper_bound.exponent) + scaled_fractionals <= margin)
-        {
-          spelling.exponent () += descale_exponent;
-          return spelling;
-        }
-      }
-
-      // Generate fractionals
-      do
-      {
-        if (spelling.full ())
-          throw std::runtime_error ("Out of buffer space");
-
-        scaled_fractionals *= 10;
-
-        char_t digit = char_t (scaled_fractionals >> -upper_bound.exponent);
-        if (digit != 0 || length != 0)
-          spelling.push_back (zero + digit);
-
-        scaled_fractionals &= fractional_mask;
-        descale_exponent--;
-        margin *= 10;
-      }
-      while (scaled_fractionals > margin);
-
-      spelling.exponent () += descale_exponent;
-      return spelling;
-    }
-
-    template <typename char_t>
-    auto grisu2 (u64 significand, i32 exponent, char_t zero)
-      -> float_spelling <char_t>
-    {
-      soft_float upper_bound;
-      u64        margin;
-      i32        decimal_exponent;
-
-      compute_parameters (significand, exponent, upper_bound, margin, decimal_exponent);
-
-      return generate_digits (upper_bound, margin, decimal_exponent, zero);
-    }
-
     u64 as_bits (f64 value)
     {
       union U
@@ -290,38 +223,64 @@ namespace Rk
       significand = raw_sig;
     }
 
-    template <typename char_t>
-    auto spell_float_impl (f64 value, char_t zero)
-      -> float_spelling <char_t>
+    float_expander::float_expander (double value)
     {
-      u64        significand;
-      i32        exponent;
-      bool       negative;
-      float_kind kind;
-      categorize_float (value, significand, exponent, negative, kind);
+      u64 value_sig;
+      i32 value_exp;
+      categorize_float (value, value_sig, value_exp, neg, kn);
 
-      float_spelling <char_t> result;
+      if (kn == float_normal || kn == float_subnormal)
+      {
+        soft_float upper_bound;
+        compute_parameters (value_sig, value_exp, upper_bound, margin, dec_exp);
 
-      // Nothing to do for zero, inf, and nan
-      if (kind == float_normal || kind == float_subnormal)
-        result = grisu2 (significand, exponent, zero);
+        exp = upper_bound.exponent;
+        u32 int_part = u32 (upper_bound.significand >> -upper_bound.exponent);
+        int_expander = expand_radix (int_part, 10);
+        dec_exp += int_expander.remaining ();
+
+        frac_part = upper_bound.significand & ((1ull << -exp) - 1);
+      }
+      else
+      {
+        // Don't generate digits for zero, inf, and nan
+        frac_part = 0;
+        margin = 1;
+      }
+    }
+
+    void spell_float (csink& sn, double value, const cnumeric_ortho& ortho, const numeric_ortho_options& opts)
+    {
+      float_expander fe (value);
+
+      if (fe.negative ())
+        sn.write (ortho.minus);
+      else if (opts.show_plus)
+        sn.write (ortho.plus);
+
+      if (!fe.representable ())
+      {
+        if (fe.infinite ())
+          sn.write (ortho.infinity);
+        else if (fe.nan ())
+          sn.write (ortho.nan);
+        else if (fe.zero ())
+          sn.write (ortho.digits [0]);
+
+        return;
+      }
+
+      while (!fe.done ())
+      {
+        auto dig = fe.next_digit ();
+        sn.write (ortho.digits [dig]);
+      }
+
+      auto exp_opts = opts;
+      exp_opts.show_plus = true;
       
-      result.negative () = negative;
-      result.kind     () = kind;
-
-      return result;
-    }
-
-    auto RK_API spell_float (f64 mag, char zero)
-      -> float_spelling <char>
-    {
-      return spell_float_impl (mag, zero);
-    }
-
-    auto RK_API spell_float (f64 mag, char16 zero)
-      -> float_spelling <char16>
-    {
-      return spell_float_impl (mag, zero);
+      sn.write (ortho.exponent_seperator);
+      spell_integer (sn, decompose (fe.exponent ()), ortho, exp_opts);
     }
 
   }

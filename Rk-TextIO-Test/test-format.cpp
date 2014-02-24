@@ -9,7 +9,7 @@
 // in relation to such use.
 //
 
-#include <Rk/tio/fixed_out_stream.hpp>
+#include <Rk/tio/array_out_stream.hpp>
 #include <Rk/tio/format.hpp>
 
 #include <string>
@@ -19,10 +19,10 @@
 namespace RkTest
 {
   template <typename... item_ts>
-  std::string format_to_string (Rk::string_ref format, const item_ts&... items)
+  std::string format_to_string (Rk::cstring_ref format, const item_ts&... items)
   {
     char buffer [256];
-    auto stream = Rk::tio::make_fixed_out_stream (buffer, 255);
+    auto stream = Rk::tio::make_array_out_stream (buffer, 255);
 
     Rk::tio::format (stream, format, items...);
 
@@ -33,10 +33,7 @@ namespace RkTest
   {
     bool ok = true;
 
-    TEST (Rk::string_ref ("Hello A B 4 3 % ") == format_to_string ("Hello %1 %2 %4 %3 %% %", "A", 'B', 3, 4));
-
-    TEST_EXCEPT (format_to_string ("%9", 1, 2, 3), std::out_of_range);
-    TEST_EXCEPT (format_to_string ("%H", 1, 2, 3), std::invalid_argument);
+    TEST (format_to_string ("Hello %1 %2 %4 %3 %% %9 %m %", "A", 'B', 3, 4) == "Hello A B 4 3 % \xef\xbf\xbd \xef\xbf\xbd ");
 
     return ok;
   }

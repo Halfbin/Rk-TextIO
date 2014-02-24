@@ -9,14 +9,14 @@
 // in relation to such use.
 //
 
-#include <Rk/tio/fixed_out_stream.hpp>
+#include <Rk/tio/array_out_stream.hpp>
 
 namespace RkTest
 {
   bool test_outstream ()
   {
     char buf [64];
-    auto os = Rk::tio::make_fixed_out_stream (buf, 64);
+    auto os = Rk::tio::make_array_out_stream (buf, 64);
 
     return true;
   }

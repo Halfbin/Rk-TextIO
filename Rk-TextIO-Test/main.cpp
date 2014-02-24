@@ -13,20 +13,24 @@
 
 namespace RkTest
 {
-  bool test_spell_natural ();
+/*bool test_spell_natural ();
   bool test_spell_float   ();
-  bool test_outstream     ();
+  bool test_outstream     ();*/
   bool test_format        ();
+  bool test_utf8_encoding ();
+  bool test_utf8_decoding ();
 
   bool test_textio ()
   {
     bool ok = true;
 
-    TEST (test_spell_natural ());
+  /*TEST (test_spell_natural ());
     TEST (test_spell_float ());
-    TEST (test_outstream ());
+    TEST (test_outstream ());*/
     TEST (test_format ());
-
+    TEST (test_utf8_encoding ());
+    TEST (test_utf8_decoding ());
+    
     return ok;
   }
 

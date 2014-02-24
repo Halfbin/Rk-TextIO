@@ -23,10 +23,10 @@ namespace Rk
   {
     namespace format_private
     {
-      template <typename policy>
+      template <typename stream_t>
       class format_item
       {
-        typedef out_stream <policy> stream_t;
+        typedef stream_t stream_t;
 
         const void* const ptr;
         void (format_item::*invoke) (stream_t&) const;
@@ -49,83 +49,73 @@ namespace Rk
           (this ->* invoke) (stream);
         }
 
-        format_item             (const format_item&) = delete;
-        format_item& operator = (const format_item&) = delete;
-
-        format_item (format_item&& other) :
-          raw    (other.raw)
-          invoke (other.invoke)
-        {
-          other.raw    = nullptr;
-          other.invoke = nullptr;
-        }
-
-        format_item& operator = (format_item&& rhs)
-        {
-          std::swap (raw    = nullptr, other.raw);
-          std::swap (invoke = nullptr, other.invoke);
-          return *this;
-        }
-
       };
 
-      template <typename policy, uint in_count>
+      template <typename stream_t>
       void format_impl (
-        out_stream <policy>&                         stream,
-        string_ref_base <typename policy::char_t>    format,
-        std::array <format_item <policy>, in_count>& items)
+        stream_t&                     stream,
+        string_ref_base <char>        format,
+        const format_item <stream_t>* items,
+        uint                          count)
       {
         using std::begin;
         using std::end;
         
-        auto percent = std::find (begin (format), end (format), '%');
-
-        stream.write (begin (format), percent);
-
-        // No percents or orphan; output rest of the format string
-        if (percent == end (format) || percent + 1 == end (format))
-          return;
-
-        // Percent sign
-        char spec = *++percent;
-
-        // Escaped percent
-        if (spec == '%')
+        for (;;)
         {
-          stream << '%';
-          return format_impl (stream, { ++percent, end (format) }, items);
+          // Find % specifier and print intervening text
+          auto percent = std::find (begin (format), end (format), '%');
+          stream.write (begin (format), percent);
+
+          // No percents or orphan
+          if (percent + 1 >= end (format))
+            return;
+
+          // Grab specifier
+          char spec = *++percent;
+
+          format = { ++percent, end (format) };
+
+          // Escaped percent
+          if (spec == '%')
+          {
+            stream << "%";
+            continue;
+          }
+
+          if (spec < '0' || spec > '9')
+          {
+            stream << "\xef\xbf\xbd";
+            continue;
+          }
+
+          uint index = spec - '0' - 1;
+          if (index >= count)
+          {
+            stream << "\xef\xbf\xbd";
+            continue;
+          }
+
+          items [index].format (stream);
         }
-        else if (spec < '0' || spec > '9')
-        {
-          throw std::invalid_argument ("Invalid format specifier");
-        }
-
-        // Format index
-        uint index = spec - '0' - 1;
-
-        if (index >= in_count)
-          throw std::out_of_range ("Format specifier out-of-range");
-
-        items [index].format (stream);
-
-        format_impl (stream, { ++percent, end (format) }, items);
       }
 
     }
 
     template <typename policy, typename... item_ts>
     void format (
-      out_stream <policy>&                      stream,
-      string_ref_base <typename policy::char_t> format,
-      const item_ts&...                         items)
+      out_stream <policy>&      stream,
+      string_ref_base
+      <typename policy::unit_t> format,
+      const item_ts&...         items)
     {
       using namespace format_private;
 
-      std::array <format_item <policy>, sizeof... (items)> boxed {
+      format_item <out_stream <policy>> proxies [] = {
         items...
       };
 
-      format_impl (stream, format, boxed);
+      format_impl (stream, format, proxies, sizeof... (items));
     }
 
   } // tio

@@ -11,50 +11,39 @@
 
 #pragma once
 
-#include <Rk/type_traits.hpp>
+#include <Rk/string_ref.hpp>
 #include <Rk/types.hpp>
 
 namespace Rk
 {
   namespace tio
   {
-    template <typename char_t>
+    template <typename unit_t>
     class sink
     {
     public:
-      typedef char_t char_t;
+      typedef unit_t unit_t;
 
-      virtual char_t* acquire (size_t request) = 0;
-      virtual void    release (size_t commit)  = 0;
-      virtual void    flush   ()               = 0;
-      virtual size_t  max     () const         = 0;
+      virtual void write (string_ref_base <unit_t> src) = 0;
+      virtual void flush () = 0;
 
     };
 
-    template <typename T, typename char_t>
-    struct is_sink :
-      public std::is_base_of <sink <char_t>, T>
-    { };
+    typedef sink <char>   csink;
+    typedef sink <wchar>  wsink;
+    typedef sink <char16> u16sink;
+    typedef sink <char32> u32sink;
 
-    template <typename sink_t, typename char_t>
-    auto write (sink_t& sink, const char_t* chars, const char_t* end)
-      -> std::enable_if_t <is_sink <sink_t, char_t>::value>
+    template <typename unit_t>
+    void write (sink <unit_t>& sn, const unit_t* src, size_t len)
     {
-      while (chars != end)
-      {
-        auto space = std::min (size_t (end - chars), sink.max ());
-        auto dest = sink.acquire (space);
-        copy (dest, chars, space);
-        sink.release (space);
-        chars += space;
-      }
+      if (len != 0) sn.write (make_string_ref (src, len));
     }
 
-    template <typename sink_t, typename char_t>
-    auto write (sink_t& sink, const char_t* chars, size_t length)
-      -> std::enable_if_t <is_sink <sink_t, char_t>::value>
+    template <typename unit_t>
+    void write (sink <unit_t>& sn, const unit_t* src, const unit_t* end)
     {
-      write (sink, chars, chars + length);
+      if (end > src) sn.write (make_string_ref (src, end - src));
     }
 
   }

@@ -9,7 +9,12 @@
 // in relation to such use.
 //
 
+// Tests
+#include <Rk/tio/float_expander.hpp>
 #include <Rk/tio/spell_float.hpp>
+
+// Uses
+#include <Rk/tio/default_ortho.hpp>
 #include <Rk/string_ref.hpp>
 
 #include "Test.hpp"
@@ -18,14 +23,37 @@ namespace RkTest
 {
   bool test_spell_float_kind (double value, Rk::tio::float_kind canon)
   {
-    auto spelling = Rk::tio::spell_float (value, '0');
-    return spelling.kind () == canon;
+    auto fe = Rk::tio::float_expander (value);
+    return fe.kind () == canon;
   }
 
-  bool test_spell_float (Rk::string_ref canon_digits, i32 canon_exp, double value)
+  class test_sink :
+    public Rk::tio::csink
   {
-    auto spelling = Rk::tio::spell_float (value, '0');
-    return Rk::string_ref (spelling.begin (), spelling.length ()) == canon_digits && spelling.exponent () == canon_exp;
+    std::string str;
+
+  public:
+    
+    void write (Rk::cstring_ref src)
+    {
+      str.append (src.data (), src.length ());
+    }
+
+    void flush ()
+    { }
+
+    Rk::cstring_ref string () const
+    {
+      return str;
+    }
+
+  };
+
+  bool test_spell_float (Rk::cstring_ref canon_digits, double value)
+  {
+    test_sink sink;
+    Rk::tio::spell_float (sink, value, Rk::tio::default_numeric_ortho, Rk::tio::default_numeric_ortho_options);
+    return sink.string () == canon_digits;
   }
 
   bool test_spell_float () try

@@ -11,24 +11,21 @@
 
 #pragma once
 
+#include <Rk/tio/ortho.hpp>
+#include <Rk/tio/sink.hpp>
+
+#include <Rk/string_ref.hpp>
+
+#ifndef RK_API
+#define RK_API
+#endif
+
 namespace Rk
 {
   namespace tio
   {
-    template <typename char_t>
-    class sink;
-
-    template <typename sink>
-    class speller;
-
-    template <
-      typename                  char_t,
-      template <typename> class sink,
-      template <typename> class speller>
-    struct out_stream_policy;
-
-    template <typename policy>
-    class out_stream;
+    RK_API void spell_integer (csink&, soft_int_32, const cnumeric_ortho&, const numeric_ortho_options&);
+    RK_API void spell_integer (csink&, soft_int_64, const cnumeric_ortho&, const numeric_ortho_options&);
 
   }
 

@@ -1,19 +1,72 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="..\Include\Rk\tio\out_stream.hpp" />
-    <ClInclude Include="..\Include\Rk\tio\speller.hpp" />
-    <ClInclude Include="..\Include\Rk\tio\default_speller.hpp" />
-    <ClInclude Include="..\Include\Rk\tio\fixed_out_stream.hpp" />
-    <ClInclude Include="..\Include\Rk\tio\forward.hpp" />
-    <ClInclude Include="..\Include\Rk\tio\sink.hpp" />
-    <ClInclude Include="..\Include\Rk\tio\raw_out_stream.hpp" />
-    <ClInclude Include="soft_float.hpp" />
-    <ClInclude Include="..\Include\Rk\tio\spell_float.hpp" />
-    <ClInclude Include="..\Include\Rk\tio\spell_natural.hpp" />
-    <ClInclude Include="..\Include\Rk\tio\format.hpp" />
+    <ClInclude Include="..\Include\Rk\tio\array_out_stream.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Rk\tio\default_ortho.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Rk\tio\float_expander.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Rk\tio\format.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Rk\tio\ortho.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Rk\tio\out_stream.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Rk\tio\radix_expander.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Rk\tio\sink.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Rk\tio\spell_float.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Rk\tio\spell_integer.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Rk\tio\unicode_common.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Rk\tio\utf8.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Rk\tio\utf16.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="soft_float.hpp">
+      <Filter>Impl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="spell_float.cpp" />
+    <ClCompile Include="default_ortho.cpp">
+      <Filter>Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="spell_float.cpp">
+      <Filter>Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="spell_integer.cpp">
+      <Filter>Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="utf8.cpp">
+      <Filter>Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="utf16.cpp">
+      <Filter>Impl</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="API">
+      <UniqueIdentifier>{6a0b4a31-ac6f-4204-9a78-c120e9e965fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Impl">
+      <UniqueIdentifier>{759b0e37-4975-4a82-aaf9-b0196a1e12b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

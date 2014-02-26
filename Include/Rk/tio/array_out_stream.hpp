@@ -102,7 +102,7 @@ namespace Rk
     template <typename unit_t, typename limit_t>
     auto make_array_out_stream (unit_t* begin, limit_t&& limit)
     {
-      return out_stream <array_out_stream_policy <unit_t>> {
+      return out_stream_base <array_out_stream_policy <unit_t>> {
         array_sink <unit_t> (begin, std::forward <limit_t> (limit))
       };
     }
@@ -110,22 +110,22 @@ namespace Rk
     template <typename unit_t, typename limit_t, typename ortho_t>
     auto make_array_out_stream (unit_t* begin, limit_t&& limit, ortho_t&& ortho)
     {
-      return out_stream <array_out_stream_policy <unit_t, ortho_t>> {
+      return out_stream_base <array_out_stream_policy <unit_t, ortho_t>> {
         array_sink <unit_t> (begin, std::forward <limit_t> (limit)),
         std::forward <ortho_t> (ortho)
       };
     }
 
-    typedef out_stream <array_out_stream_policy <char>>
+    typedef out_stream_base <array_out_stream_policy <char>>
       carray_out_stream;
 
-    typedef out_stream <array_out_stream_policy <wchar>>
+    typedef out_stream_base <array_out_stream_policy <wchar>>
       warray_out_stream;
 
-    typedef out_stream <array_out_stream_policy <char16>>
+    typedef out_stream_base <array_out_stream_policy <char16>>
       u16array_out_stream;
 
-    typedef out_stream <array_out_stream_policy <char16>>
+    typedef out_stream_base <array_out_stream_policy <char16>>
       u32array_out_stream;
 
   } // tio

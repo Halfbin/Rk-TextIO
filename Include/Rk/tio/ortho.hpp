@@ -20,27 +20,31 @@ namespace Rk
 {
   namespace tio
   {
-    template <typename int_t>
-    struct soft_int
+    struct soft_int_32
     {
-      int_t magnitude;
-      bool  sign;
+      bool sign;
+      u32  magnitude;
+
+      template <typename int_t, typename en = typename std::enable_if <sizeof (int_t) <= 4>::type>
+      soft_int_32 (int_t value) :
+        sign      (value < 0),
+        magnitude (sign ? -value : value)
+      { }
+
     };
 
-    using soft_int_32 = soft_int <u32>;
-    using soft_int_64 = soft_int <u64>;
-
-    template <typename int_t>
-    auto decompose (int_t value)
-      -> std::conditional_t <sizeof (int_t) <= 4, soft_int_32, soft_int_64>
+    struct soft_int_64
     {
-      static_assert (std::is_integral <int_t>::value, "Rk::tio::decompose is for integrals only");
+      bool sign;
+      u64  magnitude;
 
-      if (std::is_signed <int_t>::value && value < 0)
-        return { -value, true };
-      else
-        return { value, false };
-    }
+      template <typename int_t, typename en = typename std::enable_if <sizeof (int_t) == 8>::type>
+      soft_int_64 (int_t value) :
+        sign      (value < 0),
+        magnitude (sign ? -value : value)
+      { }
+
+    };
 
     template <typename unit_t>
     class digit_map

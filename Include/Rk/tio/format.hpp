@@ -104,14 +104,14 @@ namespace Rk
 
     template <typename policy, typename... item_ts>
     void format (
-      out_stream <policy>&      stream,
+      out_stream_base <policy>&      stream,
       string_ref_base
       <typename policy::unit_t> format,
       const item_ts&...         items)
     {
       using namespace format_private;
 
-      format_item <out_stream <policy>> proxies [] = {
+      format_item <out_stream_base <policy>> proxies [] = {
         items...
       };
 

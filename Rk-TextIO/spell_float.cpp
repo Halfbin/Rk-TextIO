@@ -280,7 +280,7 @@ namespace Rk
       exp_opts.show_plus = true;
       
       sn.write (ortho.exponent_seperator);
-      spell_integer (sn, decompose (fe.exponent ()), ortho, exp_opts);
+      spell_integer (sn, fe.exponent (), ortho, exp_opts);
     }
 
   }

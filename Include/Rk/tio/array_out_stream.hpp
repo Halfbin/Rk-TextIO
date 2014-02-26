@@ -25,107 +25,111 @@ namespace Rk
 {
   namespace tio
   {
-    template <typename unit_t>
-    class array_sink :
-      public sink <unit_t>
+    namespace detail
     {
-      unit_t* beg,
-            * ptr,
-            * ed;
-
-    public:
-      array_sink (unit_t* new_ptr, unit_t* new_end) :
-        beg (new_ptr),
-        ptr (new_ptr),
-        ed  (new_end)
+      template <typename unit_t>
+      class array_sink :
+        public sink <unit_t>
       {
-        if (ptr >= ed)
-          throw std::invalid_argument ("Invalid range");
-      }
+        unit_t* beg,
+              * ptr,
+              * ed;
 
-      array_sink (unit_t* new_ptr, size_t len) :
-        array_sink (new_ptr, new_ptr + len)
-      { }
+      public:
+        array_sink (unit_t* new_ptr, unit_t* new_end) :
+          beg (new_ptr),
+          ptr (new_ptr),
+          ed  (new_end)
+        {
+          if (ptr >= ed)
+            throw std::invalid_argument ("Invalid range");
+        }
 
-      void reset (unit_t* new_beg, unit_t* new_ed)
-      {
-        if (!new_beg || ned_ed < new_beg)
-          throw std::length_error ("Invalid destination array");
+        array_sink (unit_t* new_ptr, size_t len) :
+          array_sink (new_ptr, new_ptr + len)
+        { }
 
-        beg = new_beg;
-        ptr = beg;
-        ed  = new_ed;
-      }
+        void reset (unit_t* new_beg, unit_t* new_ed)
+        {
+          if (!new_beg || ned_ed < new_beg)
+            throw std::length_error ("Invalid destination array");
 
-      void write (string_ref_base <unit_t> src)
-      {
-        if (src.length () > space ())
-          throw io_failure ("Out of array space");
-        ptr = copy (ptr, ed, src.data (), src.length ());
-      }
+          beg = new_beg;
+          ptr = beg;
+          ed  = new_ed;
+        }
 
-      void put (unit_t unit)
-      {
-        if (space () < 1)
-          throw io_failure ("Out of array space");
-        *ptr++ = unit;
-      }
+        void write (string_ref_base <unit_t> src)
+        {
+          if (src.length () > space ())
+            throw io_failure ("Out of array space");
+          ptr = copy (ptr, ed, src.data (), src.length ());
+        }
 
-      void flush ()
-      { }
+        void put (unit_t unit)
+        {
+          if (space () < 1)
+            throw io_failure ("Out of array space");
+          *ptr++ = unit;
+        }
 
-      size_t space () const
-      {
-        return ed - ptr;
-      }
+        void flush ()
+        { }
 
-      const unit_t* begin () const
-      {
-        return beg;
-      }
+        size_t space () const
+        {
+          return ed - ptr;
+        }
 
-      const unit_t* pointer () const
-      {
-        return ptr;
-      }
+        const unit_t* begin () const
+        {
+          return beg;
+        }
 
-      const unit_t* end () const
-      {
-        return ed;
-      }
+        const unit_t* pointer () const
+        {
+          return ptr;
+        }
 
-    };
+        const unit_t* end () const
+        {
+          return ed;
+        }
 
-    template <typename unit_t, typename ortho_t = default_ortho <unit_t>>
-    using array_out_stream_policy = out_stream_policy <unit_t, ortho_t, array_sink <unit_t>>;
+      };
+
+      template <typename unit_t, typename ortho_t = default_ortho <unit_t>>
+      using array_out_stream_policy = out_stream_policy <unit_t, ortho_t, array_sink <unit_t>>;
+
+    } // detail
 
     template <typename unit_t, typename limit_t>
     auto make_array_out_stream (unit_t* begin, limit_t&& limit)
     {
-      return out_stream_base <array_out_stream_policy <unit_t>> {
-        array_sink <unit_t> (begin, std::forward <limit_t> (limit))
+      return out_stream_base <detail::array_out_stream_policy <unit_t>> {
+        detail::array_sink <unit_t> (begin, std::forward <limit_t> (limit))
       };
     }
 
     template <typename unit_t, typename limit_t, typename ortho_t>
     auto make_array_out_stream (unit_t* begin, limit_t&& limit, ortho_t&& ortho)
     {
-      return out_stream_base <array_out_stream_policy <unit_t, ortho_t>> {
-        array_sink <unit_t> (begin, std::forward <limit_t> (limit)),
+      return out_stream_base <detail::array_out_stream_policy <unit_t, ortho_t>> {
+        detail::array_sink <unit_t> (begin, std::forward <limit_t> (limit)),
         std::forward <ortho_t> (ortho)
       };
     }
 
-    typedef out_stream_base <array_out_stream_policy <char>>
+    typedef out_stream_base <detail::array_out_stream_policy <char>>
       carray_out_stream;
 
-    typedef out_stream_base <array_out_stream_policy <wchar>>
+    typedef out_stream_base <detail::array_out_stream_policy <wchar>>
       warray_out_stream;
 
-    typedef out_stream_base <array_out_stream_policy <char16>>
+    typedef out_stream_base <detail::array_out_stream_policy <char16>>
       u16array_out_stream;
 
-    typedef out_stream_base <array_out_stream_policy <char16>>
+    typedef out_stream_base <detail::array_out_stream_policy <char16>>
       u32array_out_stream;
 
   } // tio

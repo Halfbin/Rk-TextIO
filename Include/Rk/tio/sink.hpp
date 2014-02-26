@@ -25,6 +25,7 @@ namespace Rk
       typedef unit_t unit_t;
 
       virtual void write (string_ref_base <unit_t> src) = 0;
+      virtual void put   (unit_t unit) = 0;
       virtual void flush () = 0;
 
     };
@@ -44,6 +45,12 @@ namespace Rk
     void write (sink <unit_t>& sn, const unit_t* src, const unit_t* end)
     {
       if (end > src) sn.write (make_string_ref (src, end - src));
+    }
+
+    template <typename unit_t>
+    void put (sink <unit_t>& sn, unit_t unit)
+    {
+      sn.put (unit);
     }
 
   }

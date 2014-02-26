@@ -64,6 +64,13 @@ namespace Rk
         ptr = copy (ptr, ed, src.data (), src.length ());
       }
 
+      void put (unit_t unit)
+      {
+        if (space () < 1)
+          throw io_failure ("Out of array space");
+        *ptr++ = unit;
+      }
+
       void flush ()
       { }
 

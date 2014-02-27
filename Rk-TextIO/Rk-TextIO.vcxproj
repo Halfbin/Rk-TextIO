@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Include\Rk\tio\file_out_stream.hpp" />
     <ClInclude Include="..\Include\Rk\tio\spell_float.hpp" />
     <ClInclude Include="..\Include\Rk\tio\default_ortho.hpp" />
     <ClInclude Include="..\Include\Rk\tio\array_out_stream.hpp" />
@@ -61,7 +62,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\Include;..\..\Rk-Core\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;..\..\Rk-Core\Include;..\..\Rk-RawIO\Include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RK_TEXTIO_API=__declspec(dllexport);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -74,7 +75,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\Include;..\..\Rk-Core\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;..\..\Rk-Core\Include;..\..\Rk-RawIO\Include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RK_TEXTIO_API=__declspec(dllexport);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>

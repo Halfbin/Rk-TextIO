@@ -9,15 +9,13 @@
 // in relation to such use.
 //
 
-#include <Rk/tio/array_out_stream.hpp>
+#include <Rk/tio/string_out_stream.hpp>
 
 namespace RkTest
 {
   bool test_outstream ()
   {
-    char buf [64];
-    Rk::tio::carray_out_stream os (buf, 64);
-
+    Rk::tio::cstring_out_stream stream;
     return true;
   }
 

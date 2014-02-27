@@ -22,6 +22,7 @@
     <ClInclude Include="..\Include\Rk\tio\float_expander.hpp" />
     <ClInclude Include="..\Include\Rk\tio\spell_integer.hpp" />
     <ClInclude Include="..\Include\Rk\tio\radix_expander.hpp" />
+    <ClInclude Include="..\Include\Rk\tio\string_out_stream.hpp" />
     <ClInclude Include="soft_float.hpp" />
   </ItemGroup>
   <ItemGroup>

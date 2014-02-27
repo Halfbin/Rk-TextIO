@@ -9,7 +9,6 @@
 // in relation to such use.
 //
 
-#include <Rk/tio/array_out_stream.hpp>
 #include <Rk/tio/format.hpp>
 
 #include <string>
@@ -18,22 +17,11 @@
 
 namespace RkTest
 {
-  template <typename... item_ts>
-  std::string format_to_string (Rk::cstring_ref format, const item_ts&... items)
-  {
-    char buffer [256];
-    Rk::tio::carray_out_stream stream (buffer, 255);
-
-    Rk::tio::format (stream, format, items...);
-
-    return std::string (stream.sink ().begin (), stream.sink ().pointer ());
-  }
-
   bool test_format () try
   {
     bool ok = true;
 
-    TEST (format_to_string ("Hello %1 %2 %4 %3 %% %9 %m %", "A", 'B', 3, 4) == "Hello A B 4 3 % \xef\xbf\xbd \xef\xbf\xbd ");
+    TEST (Rk::tio::format ("Hello %1 %2 %4 %3 %% %9 %m %", "A", 'B', 3, 4) == "Hello A B 4 3 % \xef\xbf\xbd \xef\xbf\xbd ");
 
     return ok;
   }

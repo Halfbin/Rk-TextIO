@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include <Rk/tio/out_stream.hpp>
+#include <Rk/tio/string_out_stream.hpp>
 
 #include <algorithm>
 #include <iostream>
@@ -44,7 +44,7 @@ namespace Rk
           invoke (&format_item::template invoke_impl <value_t>)
         { }
 
-        void format (stream_t& stream) const
+        void put (stream_t& stream) const
         {
           (this ->* invoke) (stream);
         }
@@ -54,7 +54,7 @@ namespace Rk
       template <typename stream_t>
       void format_impl (
         stream_t&                     stream,
-        cstring_ref                   format,
+        cstring_ref                   pattern,
         const format_item <stream_t>* items,
         uint                          count)
       {
@@ -64,17 +64,17 @@ namespace Rk
         for (;;)
         {
           // Find % specifier and print intervening text
-          auto percent = std::find (begin (format), end (format), '%');
-          stream.write (begin (format), percent);
+          auto percent = std::find (begin (pattern), end (pattern), '%');
+          stream.write (begin (pattern), percent);
 
           // No percents or orphan
-          if (percent + 1 >= end (format))
+          if (percent + 1 >= end (pattern))
             return;
 
           // Grab specifier
           char spec = *++percent;
 
-          format = { ++percent, end (format) };
+          pattern = { ++percent, end (pattern) };
 
           // Escaped percent
           if (spec == '%')
@@ -96,17 +96,15 @@ namespace Rk
             continue;
           }
 
-          items [index].format (stream);
+          items [index].put (stream);
         }
       }
 
     }
 
     template <typename stream_t, typename... item_ts>
-    void format (
-      stream_t&         stream,
-      cstring_ref       format,
-      const item_ts&... items)
+    auto format (stream_t& stream, cstring_ref pattern, const item_ts&... items)
+      -> typename std::enable_if <is_out_stream <stream_t>::value>::type
     {
       using namespace format_private;
 
@@ -115,7 +113,15 @@ namespace Rk
         items...
       };
 
-      format_impl (stream, format, proxies, sizeof... (items));
+      format_impl (stream, pattern, proxies, sizeof... (items));
+    }
+
+    template <typename... item_ts>
+    std::string format (cstring_ref pattern, const item_ts&... items)
+    {
+      cstring_out_stream stream;
+      format (stream, pattern, items...);
+      return stream.string ();
     }
 
   } // tio

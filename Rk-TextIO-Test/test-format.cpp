@@ -22,7 +22,7 @@ namespace RkTest
   std::string format_to_string (Rk::cstring_ref format, const item_ts&... items)
   {
     char buffer [256];
-    auto stream = Rk::tio::make_array_out_stream (buffer, 255);
+    Rk::tio::carray_out_stream stream (buffer, 255);
 
     Rk::tio::format (stream, format, items...);
 

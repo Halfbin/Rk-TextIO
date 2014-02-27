@@ -49,16 +49,6 @@ namespace Rk
           array_sink (new_ptr, new_ptr + len)
         { }
 
-        void reset (unit_t* new_beg, unit_t* new_ed)
-        {
-          if (!new_beg || ned_ed < new_beg)
-            throw std::length_error ("Invalid destination array");
-
-          beg = new_beg;
-          ptr = beg;
-          ed  = new_ed;
-        }
-
         void write (string_ref_base <unit_t> src)
         {
           if (src.length () > space ())
@@ -75,6 +65,16 @@ namespace Rk
 
         void flush ()
         { }
+
+        void reset (unit_t* new_beg, unit_t* new_ed)
+        {
+          if (!new_beg || ned_ed < new_beg)
+            throw std::length_error ("Invalid destination array");
+
+          beg = new_beg;
+          ptr = beg;
+          ed  = new_ed;
+        }
 
         size_t space () const
         {
@@ -98,39 +98,55 @@ namespace Rk
 
       };
 
-      template <typename unit_t, typename ortho_t = default_ortho <unit_t>>
-      using array_out_stream_policy = out_stream_policy <unit_t, ortho_t, array_sink <unit_t>>;
-
     } // detail
 
-    template <typename unit_t, typename limit_t>
-    auto make_array_out_stream (unit_t* begin, limit_t&& limit)
+    template <typename unit_t, typename ortho_t = default_ortho <unit_t>>
+    class array_out_stream :
+      public out_stream_base <
+        unit_t,
+        detail::array_sink <unit_t>,
+        ortho_t
+      >
     {
-      return out_stream_base <detail::array_out_stream_policy <unit_t>> {
-        detail::array_sink <unit_t> (begin, std::forward <limit_t> (limit))
-      };
-    }
+    public:
+      template <typename limit_t>
+      array_out_stream (unit_t* begin, limit_t&& limit) :
+        stream_base_t (
+          sink_t  (begin, std::forward <limit_t> (limit)),
+          ortho_t ())
+      { }
 
-    template <typename unit_t, typename limit_t, typename ortho_t>
-    auto make_array_out_stream (unit_t* begin, limit_t&& limit, ortho_t&& ortho)
-    {
-      return out_stream_base <detail::array_out_stream_policy <unit_t, ortho_t>> {
-        detail::array_sink <unit_t> (begin, std::forward <limit_t> (limit)),
-        std::forward <ortho_t> (ortho)
-      };
-    }
+      void reset (unit_t* new_beg, unit_t* new_ed)
+      {
+        sink ().reset (new_neg, new_ed);
+      }
 
-    typedef out_stream_base <detail::array_out_stream_policy <char>>
-      carray_out_stream;
+      size_t space () const
+      {
+        return sink ().space ();
+      }
 
-    typedef out_stream_base <detail::array_out_stream_policy <wchar>>
-      warray_out_stream;
+      const unit_t* begin () const
+      {
+        return sink ().begin ();
+      }
 
-    typedef out_stream_base <detail::array_out_stream_policy <char16>>
-      u16array_out_stream;
+      const unit_t* pointer () const
+      {
+        return sink ().pointer ();
+      }
 
-    typedef out_stream_base <detail::array_out_stream_policy <char16>>
-      u32array_out_stream;
+      const unit_t* end () const
+      {
+        return sink ().end ();
+      }
+
+    };
+
+    typedef array_out_stream <char>   carray_out_stream;
+  //typedef array_out_stream <wchar>  warray_out_stream;
+    typedef array_out_stream <char16> u16array_out_stream;
+    typedef array_out_stream <char32> u32array_out_stream;
 
   } // tio
 

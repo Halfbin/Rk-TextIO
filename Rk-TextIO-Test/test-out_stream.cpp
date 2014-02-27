@@ -16,7 +16,7 @@ namespace RkTest
   bool test_outstream ()
   {
     char buf [64];
-    auto os = Rk::tio::make_array_out_stream (buf, 64);
+    Rk::tio::carray_out_stream os (buf, 64);
 
     return true;
   }

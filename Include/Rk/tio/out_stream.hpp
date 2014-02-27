@@ -45,6 +45,11 @@ namespace Rk
         const self_t& self () const { return static_cast <const self_t&> (*this); }
 
       protected:
+        template <typename... arg_ts>
+        out_stream_facade (arg_ts&&... args) :
+          base_t (std::forward <arg_ts> (args)...)
+        { }
+
         using facade_t = out_stream_facade;
 
       public:
@@ -59,7 +64,7 @@ namespace Rk
 
         template <typename arg_t>
         auto operator << (arg_t&& arg)
-          -> typename std::enable_if <std::is_convertible <arg_t, typename self_t::string_t>::value, self_t&>::type
+          -> typename std::enable_if <std::is_convertible <arg_t, string_t>::value, self_t&>::type
         {
           self ().put_string (std::forward <arg_t> (arg));
           return self ();
@@ -67,7 +72,7 @@ namespace Rk
 
         template <typename arg_t>
         auto operator << (arg_t arg)
-          -> typename std::enable_if <std::is_same <arg_t, typename self_t::unit_t>::value, self_t&>::type
+          -> typename std::enable_if <std::is_same <arg_t, unit_t>::value, self_t&>::type
         {
           self ().put_unit (arg);
           return self ();
@@ -135,6 +140,14 @@ namespace Rk
       virtual void put_float  (double) = 0;
 
     public:
+      out_stream () = default;
+
+      out_stream             (const out_stream&) = delete;
+      out_stream& operator = (const out_stream&) = delete;
+
+      out_stream             (out_stream&&) = default;
+      out_stream& operator = (out_stream&&) = default;
+
       virtual void flush () = 0;
 
     };
@@ -144,42 +157,28 @@ namespace Rk
   //typedef out_stream <wchar> wout_stream;
     typedef out_stream <u16>   u16out_stream;
     typedef out_stream <u32>   u32out_stream;
-    
-    //
-    // out_stream_policy
-    // Encapsulates policy for out_stream_base:
-    //  unit_t  - code unit type
-    //  ortho_t - orthographic component type
-    //  sink_t  - text sink device type
-    //
-    template <typename unit_t, typename ortho_t, typename sink_t>
-    struct out_stream_policy
-    {
-      typedef unit_t  unit_t;
-      typedef ortho_t ortho_t;
-      typedef sink_t  sink_t;
-      
-    };
 
     //
     // out_stream_base
     // An output stream. Derives from out_stream.
     // Contains a policy::ortho_t, used for spelling, and a policy::sink_t, for data output.
     //
-    template <typename policy>
+    template <typename unit_t, typename sink_t, typename ortho_t>
     class out_stream_base :
       public detail::out_stream_facade <
-        out_stream_base <policy>,
-        typename policy::unit_t,
-        out_stream <typename policy::unit_t>>
+        out_stream_base <unit_t, sink_t, ortho_t>,
+        unit_t,
+        out_stream <unit_t>
+      >
     {
     public:
-      using ortho_t = typename policy::ortho_t;
-      using sink_t  = typename policy::sink_t;
+      typedef ortho_t ortho_t;
+      typedef sink_t  sink_t;
       
-    private:
-      typedef out_stream_base self_t;
+    protected:
+      typedef out_stream_base stream_base_t;
 
+    private:
       sink_t  sn;
       ortho_t orth;
 
@@ -216,25 +215,16 @@ namespace Rk
       }
 
     public:
-      explicit out_stream_base (sink_t new_sn = sink_t (), ortho_t new_orth = ortho_t ()) :
-        sn   (std::forward <sink_t>  (new_sn)),
-        orth (std::forward <ortho_t> (new_orth))
+      explicit out_stream_base (sink_t new_sn, ortho_t new_orth) :
+        sn   (std::move (new_sn)),
+        orth (std::move (new_orth))
       { }
       
       out_stream_base             (const out_stream_base&) = default;
       out_stream_base& operator = (const out_stream_base&) = default;
-
-      out_stream_base (out_stream_base&& other) :
-        sn   (std::forward <sink_t>  (other.sn)),
-        orth (std::forward <ortho_t> (other.orth))
-      { }
       
-      out_stream_base& operator = (out_stream_base&& other)
-      {
-        sn = std::move (other.sn);
-        orth = std::move (other.orth);
-        return *this;
-      }
+      out_stream_base             (out_stream_base&&) = default;
+      out_stream_base& operator = (out_stream_base&&) = default;
 
       sink_t&        sink  ()       { return sn; }
       const sink_t&  sink  () const { return sn; }

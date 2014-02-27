@@ -54,7 +54,7 @@ namespace Rk
       template <typename stream_t>
       void format_impl (
         stream_t&                     stream,
-        string_ref_base <char>        format,
+        cstring_ref                   format,
         const format_item <stream_t>* items,
         uint                          count)
       {
@@ -102,16 +102,16 @@ namespace Rk
 
     }
 
-    template <typename policy, typename... item_ts>
+    template <typename stream_t, typename... item_ts>
     void format (
-      out_stream_base <policy>&      stream,
-      string_ref_base
-      <typename policy::unit_t> format,
-      const item_ts&...         items)
+      stream_t&         stream,
+      cstring_ref       format,
+      const item_ts&... items)
     {
       using namespace format_private;
 
-      format_item <out_stream_base <policy>> proxies [] = {
+      format_item <stream_t> proxies [] =
+      {
         items...
       };
 

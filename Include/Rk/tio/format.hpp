@@ -116,6 +116,14 @@ namespace Rk
       format_impl (stream, pattern, proxies, sizeof... (items));
     }
 
+    template <typename stream_t>
+    auto format (stream_t& stream, cstring_ref pattern)
+      -> typename std::enable_if <is_out_stream <stream_t>::value>::type
+    {
+      using namespace format_private;
+      format_impl (stream, pattern, static_cast <const format_item <stream_t>*> (nullptr), 0);
+    }
+
     template <typename... item_ts>
     std::string format (cstring_ref pattern, const item_ts&... items)
     {

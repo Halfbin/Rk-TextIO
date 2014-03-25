@@ -40,6 +40,9 @@
     <ClInclude Include="..\Include\Rk\tio\string_out_stream.hpp">
       <Filter>API</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\Rk\tio\std_out_stream.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="default_ortho.cpp">
